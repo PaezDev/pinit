@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# TODO: 
+# - play around with "case" in bash so we can handle invalid input (numeric args still get accepted) and so we can ditch if-then
+# - find new way to generate make file 
+# - make it so arg order doesn't matter
+
+
+if [[ $# == 0 ]]; then 
+    echo "pinit: no arguments provided"
+    echo "see pinit -h (--help) for additional information"
+    exit 1
+fi 
+
+if [[ $1 == "-h" || $1  == "--help" ]]; then 
+    echo "usage: pinit [-p port] [upload_port] [--additional-flags]"
+    echo "example: pinit -p /dev/someport --no-make"
+    exit 
+fi 
+
+# switch for providing port 
+if [[ $1 == "-p" ]]; then
+    platformio init --ide vim --board uno
+    # checks to see if port exists, exits if it doesn't 
+    if [[ -e $2 ]]; then 
+        echo "upload_port = $2" >> platformio.ini # hardcoded for now since I know platformio init always spawns .ini file
+    else 
+        echo "$2 INVALID PORT"
+        exit 1
+    fi
+fi
+
+# generate Makefile with defaults on init, if passed --no-make, exits
+if [[ $3 == "--no-make" ]]; then 
+    exit 
+else 
+    # trying to optimize the creation of this Makefile since this approach is rather brutal
+    touch Makefile
+    echo -e "all:\n\tpio -f -c vim run\nupload:\n\tpio -f -c vim run -- target upload\nclean:\n\tpio -f -c vim run --target clean\nprogram:\n\tpio -f -c vim run --target program\nuploadfs:\n\tpio -f -c vim run --target uploadfs\nupdate:\n\tpio pkg update" >> Makefile
+fi
+
+
+
