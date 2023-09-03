@@ -23,7 +23,7 @@ fi
 
 # switch for providing port 
 if [[ $1 == "-p" ]]; then
-    platformio init --ide $IDE --board $BOARD
+    pio project init --ide $IDE --board $BOARD
     # checks to see if port exists, exits if it doesn't 
     if [[ -e $2 ]]; then 
         echo "upload_port = $2" >> platformio.ini # hardcoded for now since I know platformio init always spawns .ini file
@@ -39,7 +39,7 @@ if [[ $3 == "--no-make" ]]; then
 else 
     # trying to optimize the creation of this Makefile since this approach is rather brutal
     touch Makefile
-    echo -e "all:\n\tpio -f -c vim run\nupload:\n\tpio -f -c vim run -- target upload\nclean:\n\tpio -f -c vim run --target clean\nprogram:\n\tpio -f -c vim run --target program\nuploadfs:\n\tpio -f -c vim run --target uploadfs\nupdate:\n\tpio pkg update" >> Makefile
+    echo -e "all:\n\tpio -f -c vim run\nupload:\n\tpio -f -c vim run -- target upload\nclean:\n\tpio -f -c vim run --target clean\nprogram:\n\tpio -f -c vim run --target program\nuploadfs:\n\tpio -f -c vim run --target uploadfs\nupdate:\n\tpio pkg update\nreinit:\n\tpio project init --ide $IDE --board $BOARD" >> Makefile
 fi
 
 
